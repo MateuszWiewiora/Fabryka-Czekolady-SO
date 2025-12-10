@@ -1,0 +1,15 @@
+# Skompilowane pliki
+*.o
+*.out
+*.exe
+bin/
+
+# Pliki systemowe
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Pliki tymczasowe
+*.log
+*.txt
+!requirements.txt
