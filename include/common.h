@@ -6,6 +6,9 @@
 #define SEM_KEY 180604
 #define MSG_KEY 182004
 
+#define SIMULATION_LOG_FILE "simulation_log.txt"
+#define STATE_FILE "warehouse_state.dat"
+
 struct Warehouse
 {
     int countA;
