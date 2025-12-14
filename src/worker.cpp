@@ -1,8 +1,15 @@
 #include <iostream>
 #include "common.h"
+#include <string>
 
-int main()
+int main(int argc, char *argv[])
 {
-    std::cout << "Jestem pracownikiem." << std::endl;
+    if (argc < 2)
+    {
+        std::cerr << "[PRACOWNIK] Błąd: Brak argumentu - numeru stanowiska"
+    }
+
+    int id = std::stoi(argv[1]);
+    std::cout << "[PRACOWNIK " << id << "] Na stanowisku pracy." << std::endl;
     return 0;
 }
