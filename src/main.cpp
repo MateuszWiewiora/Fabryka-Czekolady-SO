@@ -28,8 +28,6 @@ int main()
 {
     std::cout << "[MAIN] --- Start Symulacji Fabryki Czekolady ---" << std::endl;
 
-    // TODO: IPC (Pamięć, Semafory)
-    // init_ipc();
     // Tworzenie Pamięci Dzielonej
     int shmid = create_shm(SHM_KEY, sizeof(Warehouse));
     std::cout << "[MAIN] Pamiec dzielona utworzona. ID: " << shmid << std::endl;
@@ -55,6 +53,9 @@ int main()
     // Odpięcie się od pamięci (Main już jej nie potrzebuje do pracy)
     shmdt(warehouse);
 
+    int semid = create_sem(SEM_KEY, 1);
+    std::cout << "[MAIN] Semafor utworzony. ID: " << semid << std::endl;
+
     run_process("./director", "Dyrektor");
 
     run_process("./worker", "Pracownik 1", "1");
@@ -70,9 +71,8 @@ int main()
 
     std::cout << "[MAIN] Wszystkie procesy zakończone. Koniec symulacji." << std::endl;
 
-    // TODO:
-    // cleanup_ipc();
     remove_shm(shmid);
+    remove_sem(semid);
 
     return 0;
 }
