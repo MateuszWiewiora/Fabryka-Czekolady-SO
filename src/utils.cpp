@@ -18,18 +18,6 @@ int create_shm(key_t key, size_t size)
     return shmid;
 }
 
-void remove_shm(int shmid)
-{
-    if (shmctl(shmid, IPC_RMID, NULL) == -1)
-    {
-        perror("Blad usuwania pamieci dzielonej");
-    }
-    else
-    {
-        std::cout << "Pamiec dzielona usunieta." << std::endl;
-    }
-}
-
 union semun
 {
     int val;
@@ -59,14 +47,27 @@ int create_sem(key_t key, int value)
     return semid;
 }
 
-void remove_sem(int semid)
+void clean_up(int shmid, int semid)
 {
-    if (semctl(semid, 0, IPC_RMID) == -1)
+    std::cout << "[UTILS] --- Rozpoczynam sprzatanie zasobow ---" << std::endl;
+
+    if (shmctl(shmid, IPC_RMID, NULL) == -1)
     {
-        perror("Blad usuwania semafora");
+        perror("[UTILS] Blad usuwania pamieci");
     }
     else
     {
-        std::cout << "Semafor usuniety." << std::endl;
+        std::cout << "[UTILS] Pamiec dzielona usunieta." << std::endl;
     }
+
+    if (semctl(semid, 0, IPC_RMID) == -1)
+    {
+        perror("[UTILS] Blad usuwania semafora");
+    }
+    else
+    {
+        std::cout << "[UTILS] Semafor usuniety." << std::endl;
+    }
+
+    std::cout << "[UTILS] Sprzatanie zakonczone." << std::endl;
 }

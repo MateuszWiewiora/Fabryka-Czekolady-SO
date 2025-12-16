@@ -71,8 +71,7 @@ int main()
 
     std::cout << "[MAIN] Wszystkie procesy zakończone. Koniec symulacji." << std::endl;
 
-    remove_shm(shmid);
-    remove_sem(semid);
+    clean_up(shmid, semid);
 
     return 0;
 }
