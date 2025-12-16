@@ -1,8 +1,10 @@
 #include <iostream>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <sys/shm.h>
 #include <vector>
 #include "common.h"
+#include "utils.h"
 
 void run_process(const char *path, const char *name, const char *arg = nullptr)
 {
@@ -28,6 +30,30 @@ int main()
 
     // TODO: IPC (Pamięć, Semafory)
     // init_ipc();
+    // Tworzenie Pamięci Dzielonej
+    int shmid = create_shm(SHM_KEY, sizeof(Warehouse));
+    std::cout << "[MAIN] Pamiec dzielona utworzona. ID: " << shmid << std::endl;
+
+    // Podpięcie się pod pamięć, żeby wyzerować Magazyn na start
+    // shmat (Shared Memory Attach) zwraca wskaźnik void*, rzutujemy go na Warehouse*
+    Warehouse *warehouse = (Warehouse *)shmat(shmid, NULL, 0);
+
+    if (warehouse == (void *)-1)
+    {
+        perror("[MAIN] Blad shmat (przylaczanie)");
+        exit(1);
+    }
+
+    warehouse->countA = 0;
+    warehouse->countB = 0;
+    warehouse->countC = 0;
+    warehouse->countD = 0;
+    warehouse->current_capacity_used = 0;
+    warehouse->is_running = true;
+    std::cout << "[MAIN] Magazyn wyzerowany i gotowy." << std::endl;
+
+    // Odpięcie się od pamięci (Main już jej nie potrzebuje do pracy)
+    shmdt(warehouse);
 
     run_process("./director", "Dyrektor");
 
@@ -46,6 +72,7 @@ int main()
 
     // TODO:
     // cleanup_ipc();
+    remove_shm(shmid);
 
     return 0;
 }
