@@ -47,6 +47,34 @@ int create_sem(key_t key, int value)
     return semid;
 }
 
+void sem_p(int semid)
+{
+    struct sembuf buf;
+    buf.sem_num = 0; // Indeks semafora
+    buf.sem_op = -1; // Operacja: Zmniejsz o 1
+    buf.sem_flg = 0;
+
+    if (semop(semid, &buf, 1) == -1)
+    {
+        perror("Blad zamykania semafora");
+        exit(1);
+    }
+}
+
+void sem_v(int semid)
+{
+    struct sembuf buf;
+    buf.sem_num = 0;
+    buf.sem_op = 1; // Zwiększ o 1
+    buf.sem_flg = 0;
+
+    if (semop(semid, &buf, 1) == -1)
+    {
+        perror("Blad otwierania semafora");
+        exit(1);
+    }
+}
+
 void clean_up(int shmid, int semid)
 {
     std::cout << "[UTILS] --- Rozpoczynam sprzatanie zasobow ---" << std::endl;

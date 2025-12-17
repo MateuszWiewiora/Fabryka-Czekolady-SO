@@ -7,6 +7,10 @@ int create_shm(key_t key, size_t size); // tworzenie shared_mem i zwracanie jego
 
 int create_sem(key_t key, int value); // tworzenie semaforow i ust ich wartosci poczatkowej
 
+void sem_p(int semid);
+
+void sem_v(int semid);
+
 void clean_up(int shmid, int semid);
 
 #endif
