@@ -1,7 +1,7 @@
 #include <iostream>
 #include <unistd.h> // sleep, usleep
 #include <sys/shm.h>
-#include <sys/sem.h
+#include <sys/sem.h>
 #include <ctime>
 #include <cstdlib> // rand, srand
 #include <fstream>
@@ -32,7 +32,7 @@ int main(int argc, char *argv[])
     int shmid = shmget(SHM_KEY, sizeof(Warehouse), 0600);
     if (shmid == -1)
     {
-        perror("[DOSTAWCA] Blad shmget (nie widze magazynu)");
+        perror("[DOSTAWCA] Blad shmget");
         return 1;
     }
 
@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
     int semid = semget(SEM_KEY, 1, 0600);
     if (semid == -1)
     {
-        perror("[DOSTAWCA] Blad semget (nie widze semafora)");
+        perror("[DOSTAWCA] Blad semget");
         return 1;
     }
 
