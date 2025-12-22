@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
 
     int id = std::stoi(argv[1]);
 
-    std::cout << "[PRACOWNIK " << id << "] Na stanowisku pracy." << std::endl;
+    std::cout << "[PRACOWNIK " << id << "] Rozpoczynam prace." << std::endl;
 
     int shmid = shmget(SHM_KEY, sizeof(Warehouse), 0600);
     if (shmid == -1)
