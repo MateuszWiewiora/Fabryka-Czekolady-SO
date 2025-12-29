@@ -16,7 +16,7 @@ struct Warehouse
     int countC;
     int countD;
     int current_capacity_used;
-    bool is_running;
+    int command;
 };
 
 enum DirectorCommand

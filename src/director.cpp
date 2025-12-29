@@ -19,13 +19,24 @@ void save_state(Warehouse *w)
              << w->countD << " "
              << w->current_capacity_used << std::endl;
 
-        std::cout << "[DYREKTOR] Stan magazynu zapisany do pliku: " << STATE_FILE << std::endl;
+        std::cout << "[DYREKTOR] Stan magazynu zapisany do pliku.\n";
         file.close();
     }
     else
     {
         std::cerr << "[DYREKTOR] Blad otwarcia pliku do zapisu stanu!" << std::endl;
     }
+}
+
+void print_menu()
+{
+    std::cout << "\n--- CENTRUM STEROWANIA FABRYKA ---\n";
+    std::cout << " 1 - Polecenie_1: Zatrzymaj PRODUKCJE (Pracownicy STOP)\n";
+    std::cout << " 2 - Polecenie_2: Zamknij MAGAZYN (Nikt nie wchodzi)\n";
+    std::cout << " 3 - Polecenie_3: Zatrzymaj DOSTAWY (Dostawcy STOP)\n";
+    std::cout << " 4 - Polecenie_4: KONIEC CALKOWITY (Zapisz i wyjdz)\n";
+    std::cout << " s - Status magazynu\n";
+    std::cout << "----------------------------------\n";
 }
 
 int main()
@@ -53,8 +64,53 @@ int main()
         return 1;
     }
 
-    // TODO:
-    // Komendy dyrektora
+    sem_p(semid);
+    warehouse->command = CMD_NONE;
+    sem_v(semid);
+
+    char choice;
+    bool working = true;
+
+    while (working)
+    {
+        print_menu();
+        std::cin >> choice;
+
+        sem_p(semid); // Blokujemy dostęp na czas zmiany rozkazów
+
+        switch (choice)
+        {
+        case '1':
+            warehouse->command = CMD_FACTORY_STOP;
+            std::cout << "[DYREKTOR] Wyslano CMD_FACTORY_STOP. Pracownicy koncza zmiany.\n";
+            break;
+        case '2':
+            warehouse->command = CMD_WAREHOUSE_STOP;
+            std::cout << "[DYREKTOR] Wyslano CMD_WAREHOUSE_STOP. Magazyn zablokowany.\n";
+            break;
+        case '3':
+            warehouse->command = CMD_SUPPLIER_STOP;
+            std::cout << "[DYREKTOR] Wyslano CMD_SUPPLIER_STOP. Dostawcy wracaja do baz.\n";
+            break;
+        case '4':
+            warehouse->command = CMD_FACTWARE_STOP;
+            save_state(warehouse);
+            std::cout << "[DYREKTOR] Wyslano CMD_FACTWARE_STOP. Koniec symulacji.\n";
+            working = false; // Dyrektor też kończy
+            break;
+        case 's':
+            std::cout << "STAN: A=" << warehouse->countA
+                      << " B=" << warehouse->countB
+                      << " C=" << warehouse->countC
+                      << " D=" << warehouse->countD
+                      << " [Zapelnienie: " << warehouse->current_capacity_used << "/" << MAX_CAPACITY << "]\n";
+            break;
+        default:
+            std::cout << "Nieznana komenda.\n";
+        }
+
+        sem_v(semid);
+    }
 
     std::cout << "[DYREKTOR] Koniec pracy." << std::endl;
     shmdt(warehouse);

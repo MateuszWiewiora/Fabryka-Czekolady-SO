@@ -50,17 +50,17 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    // Dostawca pracuje dopóki flaga is_running jest true
-    while (warehouse->is_running)
+    while (true)
     {
-
         // Symulacja czasu dostawy (losowo od 100ms do 1s)
         usleep((rand() % 900000) + 100000);
 
         sem_p(semid);
 
-        if (!warehouse->is_running)
-        { // spr czy fabryka dziala
+        if (warehouse->command == CMD_SUPPLIER_STOP ||
+            warehouse->command == CMD_FACTWARE_STOP ||
+            warehouse->command == CMD_WAREHOUSE_STOP)
+        {
             sem_v(semid);
             break;
         }

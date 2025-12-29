@@ -41,14 +41,16 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    while (warehouse->is_running)
+    while (true)
     {
         // Czeka od 0.5s do 1.5s
         usleep((rand() % 1000000) + 500000);
 
         sem_p(semid);
 
-        if (!warehouse->is_running)
+        if (warehouse->command == CMD_FACTORY_STOP ||
+            warehouse->command == CMD_FACTWARE_STOP ||
+            warehouse->command == CMD_WAREHOUSE_STOP)
         {
             sem_v(semid);
             break;
